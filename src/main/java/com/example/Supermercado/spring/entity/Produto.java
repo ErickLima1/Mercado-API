@@ -1,5 +1,6 @@
 package com.example.Supermercado.spring.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,7 +18,7 @@ import java.time.Instant;
 public class Produto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(name = "nome")
     private String nome;
@@ -31,8 +32,18 @@ public class Produto {
     @UpdateTimestamp
     private Instant updateTimestamp;
 
+    public Produto(Long id, String nome, double valor, Instant creationTimestamp, Instant updateTimestamp, Supermercado supermercado) {
+        this.id = id;
+        this.nome = nome;
+        this.valor = valor;
+        this.creationTimestamp = creationTimestamp;
+        this.updateTimestamp = updateTimestamp;
+        this.supermercado = supermercado;
+    }
+
     @ManyToOne
     @JoinColumn(name = "supermercado_id", referencedColumnName = "id")
+    @JsonBackReference
     private Supermercado supermercado;
 
 }
