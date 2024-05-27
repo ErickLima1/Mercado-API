@@ -1,5 +1,6 @@
 package com.example.Supermercado.spring.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -48,6 +49,7 @@ public class Supermercado {
     }
 
     @OneToMany(mappedBy = "supermercado", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private Set<Produto> produtos = new HashSet<>();
 
 }
