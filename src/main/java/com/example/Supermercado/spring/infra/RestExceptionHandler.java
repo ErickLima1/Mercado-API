@@ -1,7 +1,10 @@
 package com.example.Supermercado.spring.infra;
 
+import com.example.Supermercado.spring.exceptions.InvalidSupermercadoIdException;
+import com.example.Supermercado.spring.exceptions.NoProductsFoundException;
 import com.example.Supermercado.spring.exceptions.NomeAlreadyExistsException;
 import com.example.Supermercado.spring.exceptions.idNotExistsException;
+import org.apache.catalina.connector.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -22,4 +25,15 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(threatResponse);
     }
 
+    @ExceptionHandler(NoProductsFoundException.class)
+    private ResponseEntity<RestErrorMessage> NoProductsFoundHandler(NoProductsFoundException exception) {
+        RestErrorMessage threatResponse = new RestErrorMessage(HttpStatus.NOT_FOUND, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(threatResponse);
+    }
+
+    @ExceptionHandler(InvalidSupermercadoIdException.class)
+    private ResponseEntity<RestErrorMessage> InvalidSupermercadoIdHandler(InvalidSupermercadoIdException exception) {
+        RestErrorMessage threatResponse  = new RestErrorMessage(HttpStatus.NOT_FOUND, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(threatResponse);
+    }
 }
