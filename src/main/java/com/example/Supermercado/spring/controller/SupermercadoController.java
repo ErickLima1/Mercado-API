@@ -29,12 +29,28 @@ public class SupermercadoController {
         return getByMercado.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
 
     }
+    @GetMapping("/nome/{nome}")
+    public ResponseEntity<List<Supermercado>> getMercadoByNome(@PathVariable("nome") String nome) {
+        List<Supermercado> supermercados = supermercadoService.getMercadoByNome(nome);
+        if (supermercados.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(supermercados);
+    }
+
     @GetMapping
     public ResponseEntity<List<Supermercado>> getAllMercados() {
         var getMercados = supermercadoService.getAllMercados();
         return ResponseEntity.ok(getMercados);
 
     }
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> updateMercado(@PathVariable String id,
+                                              @RequestBody @Valid CreateSupermercadoDto updateSupermercadoDto) {
+        supermercadoService.updateMercado(id, updateSupermercadoDto);
+        return ResponseEntity.noContent().build();
+    }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteMercado(@PathVariable("id") String id) {
