@@ -3,8 +3,11 @@ package com.example.Supermercado.spring.service;
 import com.example.Supermercado.spring.dto.CreateSupermercadoDto;
 import com.example.Supermercado.spring.entity.Supermercado;
 import com.example.Supermercado.spring.exceptions.NomeAlreadyExistsException;
+import com.example.Supermercado.spring.exceptions.idNotExistsException;
 import com.example.Supermercado.spring.repository.SupermercadoRepository;
+import com.fasterxml.jackson.databind.util.BeanUtil;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -40,12 +43,36 @@ public class SupermercadoService {
         return supermercadoRepository.findById(Long.parseLong(id));
     }
 
+    public List<Supermercado> getMercadoByNome(String nome) {
+        return supermercadoRepository.findByNome(nome);
+    }
+
     public List<Supermercado> getAllMercados() {
         return supermercadoRepository.findAll();
     }
 
+    public void updateMercado(String id, CreateSupermercadoDto updateMercado) {
+        Long mercadoId = Long.parseLong(id);
+        Supermercado supermercado = supermercadoRepository.findById(mercadoId)
+                .orElseThrow(idNotExistsException::new);
+
+        if(supermercadoRepository.existsByNome(updateMercado.nome())) {
+            throw new NomeAlreadyExistsException();
+
+        }
+
+        BeanUtils.copyProperties(updateMercado, supermercado);
+        supermercadoRepository.save(supermercado);
+    }
+
     public void deleteMercado(String id) {
         Long mercadoId = Long.parseLong(id);
-        supermercadoRepository.deleteById(mercadoId);
+        boolean mercadoExists = supermercadoRepository.existsById(mercadoId);
+
+        if(mercadoExists) {
+            supermercadoRepository.deleteById(mercadoId);
+        } else {
+            throw new idNotExistsException();
+        }
     }
 }
